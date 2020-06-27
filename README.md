@@ -1,3 +1,5 @@
+This project Contains ANALYSIS of data conatining Activity Monitoring Data
+
 ## Introduction
 
 It is now possible to collect a large amount of data about personal
