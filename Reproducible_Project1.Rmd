@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+## Loading and preprocessing the data
 
 **1.Code for reading in the dataset and/or processing the data**
 
@@ -24,6 +25,8 @@ library(ggplot2)
 qplot(DFsteps, binwidth=1000, xlab="total number of steps taken each day")
 ```
 
+
+## What is mean total number of steps taken per day?
 **3.Mean and median number of steps taken each day**
 
 ```{r}
@@ -39,7 +42,7 @@ stepsMedian
 averages <- aggregate(x=list(steps=DF$steps), by=list(interval=DF$interval),FUN=mean, na.rm=TRUE)
 ggplot(data=averages, aes(x=interval, y=steps)) + geom_line() + ggtitle("Time Series: average number of steps") + xlab("5-minute interval") +   ylab("average number of steps taken")
 ```
-
+## What is the average daily activity pattern?
 **5.The 5-minute interval that, on average, contains the maximum number of steps**
 ```{r}
 averages[which.max(averages$steps),]
@@ -48,6 +51,8 @@ averages[which.max(averages$steps),]
 library(ggplot2)
 library(gridExtra)
 require(gridExtra)
+
+## Imputing missing values
 
 **6.Code to describe and show a strategy for imputing missing data**
 
@@ -103,6 +108,8 @@ plot2<-qplot(DFsteps2, binwidth=1000, xlab="total number of steps taken each day
 grid.arrange(plot1, plot2, ncol=2)
 ```
 
+
+## Are there differences in activity patterns between weekdays and weekends?
 **8.Panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends**
 ```{r}
 # Creating function to find a day of week for dataset
