@@ -9,53 +9,93 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r simulateddata, echo = TRUE}
-knitr::opts_chunk$set(echo = TRUE)
 
+```r
+knitr::opts_chunk$set(echo = TRUE)
 ```
 ## Loading and preprocessing the data
 **1.Code for reading in the dataset and/or processing the data**
 
-```{r}
+
+```r
 DF <- read.csv('activity.csv')
 str(DF)
 ```
 
+```
+## 'data.frame':	17568 obs. of  3 variables:
+##  $ steps   : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ date    : chr  "2012-10-01" "2012-10-01" "2012-10-01" "2012-10-01" ...
+##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
+```
+
 **2.Histogram of the total number of steps taken each day**
 
-```{r}
+
+```r
 DFsteps <- tapply(DF$steps, DF$date, FUN=sum, na.rm=TRUE)
 library(ggplot2)
 qplot(DFsteps, binwidth=1000, xlab="total number of steps taken each day")
 ```
+
+![](Reproducible_Project1_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
 ## What is mean total number of steps taken per day?
 **3.Mean and median number of steps taken each day**
 
-```{r}
+
+```r
 stepsMean <- mean(DFsteps, na.rm=TRUE)
 stepsMedian <- median(DFsteps, na.rm=TRUE)
 stepsMean
+```
+
+```
+## [1] 9354.23
+```
+
+```r
 stepsMedian
+```
+
+```
+## [1] 10395
 ```
 ## What is the average daily activity pattern?
 **4.Time series plot of the average number of steps taken**
 
-```{r} 
+
+```r
 averages <- aggregate(x=list(steps=DF$steps), by=list(interval=DF$interval),FUN=mean, na.rm=TRUE)
 ggplot(data=averages, aes(x=interval, y=steps)) + geom_line() + ggtitle("Time Series: average number of steps") + xlab("5-minute interval") +   ylab("average number of steps taken")
 ```
 
+![](Reproducible_Project1_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
 **5.The 5-minute interval that, on average, contains the maximum number of steps**
-```{r}
+
+```r
 averages[which.max(averages$steps),]
+```
+
+```
+##     interval    steps
+## 104      835 206.1698
 ```
 ## Imputing missing values
 
 **6.Code to describe and show a strategy for imputing missing data**
 
-```{r}
+
+```r
 library(ggplot2)
 library(gridExtra)
+```
+
+```
+## Warning: package 'gridExtra' was built under R version 4.0.2
+```
+
+```r
 require(gridExtra)
 DF2 <- DF
 # add column for calculation of steps
@@ -66,7 +106,13 @@ l <- nrow(DF2)
 
 #Calculating numbers of NAs
 length(which(is.na(DF2$steps)))
+```
 
+```
+## [1] 2304
+```
+
+```r
 #Calculating NA by mean values
 for (i in 1:l) {
   if (is.na(DF2[i,1])) {
@@ -82,11 +128,23 @@ stepsMean2 <- mean(DFsteps2)
 stepsMedian2 <- median(DFsteps2)
 
 c(stepsMean2, stepsMean)
+```
+
+```
+## [1] 10766.19  9354.23
+```
+
+```r
 c(stepsMedian2, stepsMedian)
 ```
 
+```
+## [1] 10766.19 10395.00
+```
+
 **7.Histogram of the total number of steps taken each day after missing values are imputed**
-```{r}
+
+```r
 #plotting histogram with new calculated mean values
 
 DFsteps2 <- tapply(DF2$steps, DF2$ date, FUN=sum, na.rm=TRUE)
@@ -108,9 +166,12 @@ plot2<-qplot(DFsteps2, binwidth=1000, xlab="total number of steps taken each day
 grid.arrange(plot1, plot2, ncol=2)
 ```
 
+![](Reproducible_Project1_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+
 ## Are there differences in activity patterns between weekdays and weekends?
 **8.Panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends**
-```{r}
+
+```r
 # Creating function to find a day of week for dataset
 weekday.or.weekend <- function(date) {
     day <- weekdays(date)
@@ -124,6 +185,7 @@ DF2$day <- sapply(DF2$date, FUN = weekday.or.weekend)
 
 averages <- aggregate(steps ~ interval + day, data = DF2, mean)
 ggplot(averages, aes(interval, steps)) + geom_line() + facet_grid(day ~ .) + xlab("5-minute interval") + ylab("Number of steps")
-
 ```
+
+![](Reproducible_Project1_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
 **9.All of the R code needed to reproduce the results (numbers, plots, etc.) in the report**
